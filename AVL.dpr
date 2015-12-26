@@ -363,28 +363,29 @@ begin
   Add(new,root,h);
 end;
 
-procedure LeftDepth(root:pnode; var d:integer);
+function Depth(root:pnode; level:integer):integer;
+var
+  dr,dl:integer;
 begin
-  if(root = Nil) then Exit;
-  if(root^.left = Nil) then
-    LeftDepth(root^.right,d)
-  else
-    begin
-      inc(d);
-      LeftDepth(root^.left,d);
-    end;
+	if (root = Nil) then
+		Depth:=level-1
+	else
+		begin
+			dr:=Depth(root^.left,level+1);
+			dl:=Depth(root^.right,level+1);
+			if (dr > dl) then
+				Depth:=dr
+			else
+				Depth:=dl;
+		end;
 end;
 
-procedure RightDepth(root:pnode; var d:integer);
+procedure Try_Depth(root:pnode);
 begin
-  if(root = Nil) then Exit;
-  if(root^.right = Nil) then
-    LeftDepth(root^.left,d)
+  if (root <> Nil) then
+    writeln(Depth(root,1))
   else
-    begin
-      inc(d);
-      RightDepth(root^.right,d);
-    end;
+    writeln(0);
 end;
 
 VAR
@@ -430,12 +431,15 @@ BEGIN
               end;
           end;
       5:  begin
-            d:=0;
-            LeftDepth(AVL,d);
-            Writeln('The number of levels of the left subtree: ', d);
-            d:=0;
-            RightDepth(AVL,d);
-            Writeln('The number of levels of the right subtree: ', d);
+            if(AVL <> Nil) then
+              begin
+                write(' The number of levels of the left subtree: ');
+                Try_Depth(AVL^.left);
+                write(' The number of levels of the right subtree: ');
+                Try_Depth(AVL^.right);
+              end
+            else
+              writeln(' Empty tree!');
           end;
     end;
 until (cs = 6);
